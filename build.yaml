@@ -1,11 +1,16 @@
 schedules:
-  placeholder:
-    schedule: adhoc
+  commit_849:
+    schedule: per_commit
     branches:
       include: [master]
+    env_vars: |
+      EVENT_LOOP_MANAGER='libev'
     package:
       include: # list of files and glob paths to include in the artifact, relative to the current working directory
-        - wheelhouse/*cassandra_driver*.whl 
+        - wheelhouse/*cassandra_driver*.whl
+    matrix:
+      exclude:
+        - python: [3.4, 3.6]
 os:
   - ubuntu/trusty64/python-docker
 build:
