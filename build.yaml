@@ -2,7 +2,10 @@ schedules:
   adhoc:
     schedule: adhoc
     branches:
-      include: [master] 
+      include: [master]
+    package:
+      include: # list of files and glob paths to include in the artifact, relative to the current working directory
+        - wheelhouse/*cassandra_driver*.whl 
 os:
   - ubuntu/trusty64/python-docker
 build:
