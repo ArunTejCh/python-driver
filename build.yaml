@@ -1,5 +1,5 @@
 schedules:
-  adhoc:
+  placeholder:
     schedule: adhoc
     branches:
       include: [master]
