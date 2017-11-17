@@ -8,10 +8,10 @@ os:
 build:
   - script: |
       echo "Running Python wheel builder job"
-package:
-  include: # list of files and glob paths to include in the artifact, relative to the current working directory
-    - wheelhouse/*cassandra_driver*.whl
 release:
+    package:
+      include: # list of files and glob paths to include in the artifact, relative to the current working directory
+        - wheelhouse/*cassandra_driver*.whl
     after:
       each:
         - script: |
