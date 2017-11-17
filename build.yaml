@@ -5,20 +5,58 @@ schedules:
       include: [master]
     env_vars: |
       EVENT_LOOP_MANAGER='libev'
-  weekly_async2:
-    schedule: weekly
-    branches:
-      include: [master]
-    env_vars: |
-      EVENT_LOOP_MANAGER='async'
-  weekly_twister2:
-    schedule: weekly
-    branches:
-      include: [master]
-    env_vars: |
-      EVENT_LOOP_MANAGER='twisted'
+    matrix:
+      exclude:
+        - python: [3.4, 3.6]
 os:
   - ubuntu/trusty64/python-docker
 build:
   - script: |
       echo "Running Python wheel builder job"
+release:
+    package:
+      include: # list of files and glob paths to include in the artifact, relative to the current working directory
+        - wheelhouse/*cassandra_driver*.whl
+    after:
+      each:
+        - script: |
+            set -e
+            sudo docker pull quay.io/pypa/manylinux1_x86_64
+            cat << 'EOF' > build-wheels.sh
+            #!/bin/bash
+            set -e
+
+            # Install a system package required by our library
+            wget http://repository.it4i.cz/mirrors/repoforge/redhat/el5/en/x86_64/rpmforge/RPMS/rpmforge-release-0.5.3-1.el5.rf.x86_64.rpm
+            rpm -i rpmforge*
+            yum install -y libev libev-devel
+
+            mkdir wheelhouse
+            EXCLUDED_PY_VERS=( cp26 )
+
+            # Compile wheels
+            for PYBIN in /opt/python/*/bin; do
+              for PY_VER in "${EXCLUDED_PY_VERS[@]}"; do
+                if [[ "${PYBIN}" == *"$PY_VER"* ]]; then
+                  echo "In excluded python version. Skipping $PY_VER"
+                  continue 2
+                fi
+              done  
+            "${PYBIN}/pip" install -r /io/requirements.txt
+            "${PYBIN}/pip" wheel /io/ -w wheelhouse/
+            done
+
+            # Bundle external shared libraries into the wheels
+            for whl in wheelhouse/*cassandra_driver*.whl; do
+              auditwheel repair "$whl" -w /io/wheelhouse/
+            done
+            EOF
+
+            chmod +x build-wheels.sh
+            sudo docker run --rm -v `pwd`:/io quay.io/pypa/manylinux1_x86_64 /io/build-wheels.sh
+
+            # Downloading and running verification script
+            wget https://gist.githubusercontent.com/bjmb/0fa72e65f7f07bf34b813b213b9797c8/raw/112758c37f718c3d2886abd786074d526dbdb967/verify_driver_installation.py
+            sudo pip install wheelhouse/*cassandra_driver*cp27mu*.whl
+            rm -rf cassandra/
+            python verify_driver_installation.py
