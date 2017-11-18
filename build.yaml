@@ -20,11 +20,11 @@ release:
     after:
       each:
         - script: |
-            set -e
+            set -e -x
             sudo docker pull quay.io/pypa/manylinux1_x86_64
             cat << 'EOF' > build-wheels.sh
             #!/bin/bash
-            set -e
+            set -e -x
 
             # Install a system package required by our library
             wget http://repository.it4i.cz/mirrors/repoforge/redhat/el5/en/x86_64/rpmforge/RPMS/rpmforge-release-0.5.3-1.el5.rf.x86_64.rpm
