@@ -36,7 +36,7 @@ release:
 
             ls /opt/python/
             # Compile wheels
-            for PYBIN in /opt/python/cp27-cp27mu/bin; do
+            for PYBIN in /opt/python/cp27-cp27m/bin; do
               for PY_VER in "${EXCLUDED_PY_VERS[@]}"; do
                 if [[ "${PYBIN}" == *"$PY_VER"* ]]; then
                   echo "In excluded python version. Skipping $PY_VER"
