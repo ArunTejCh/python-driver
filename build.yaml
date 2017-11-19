@@ -58,8 +58,10 @@ release:
 
             # Downloading and running verification script
             wget https://gist.githubusercontent.com/bjmb/0fa72e65f7f07bf34b813b213b9797c8/raw/112758c37f718c3d2886abd786074d526dbdb967/verify_driver_installation.py
-            sudo pip install wheelhouse/*cassandra_driver*cp27mu*.whl
             rm -rf cassandra/
-            pip list
+            pip install --upgrade pip
+            pip --version
             python --version
+            sudo pip install wheelhouse/*cassandra_driver*cp27mu*.whl
+            pip list
             python verify_driver_installation.py
