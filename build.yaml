@@ -32,8 +32,9 @@ release:
             yum install -y libev libev-devel
 
             mkdir wheelhouse
-            EXCLUDED_PY_VERS=( cp26 cp33 cp34 cp35 cp36 )
+            EXCLUDED_PY_VERS=( cp26 cp33 cp34 cp35 cp36 cpython-2.6 )
 
+            sudo ls /opt/python/
             # Compile wheels
             for PYBIN in /opt/python/*/bin; do
               for PY_VER in "${EXCLUDED_PY_VERS[@]}"; do
