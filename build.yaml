@@ -64,7 +64,7 @@ release:
             python --version
             pip install --upgrade pip
             pip --version
-            pip install wheelhouse/*cassandra_driver*cp27mu*.whl
+            pip install wheelhouse/*cassandra_driver*cp27m*.whl
             pip --version
             pip list
             python verify_driver_installation.py
