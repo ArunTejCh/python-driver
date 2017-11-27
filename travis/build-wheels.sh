@@ -12,4 +12,5 @@ fi
 # Compile wheels
 MAJOR=$(${PYTHON} -c "import sys; print(sys.version_info[0])")
 
-$PIP wheel -r "requirements.txt" -w wheelhouse
+$PIP install -r "requirements.txt"
+$PIP wheel . -w wheelhouse/
